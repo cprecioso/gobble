@@ -78,16 +78,19 @@ export default function map ( inputdir, outputdir, options ) {
 								return reject( err );
 							}
 
-							if ( result === null ) return fulfil();
+							return Promise.resolve( result )
+								.then( result => {
+									if ( result === null ) return fulfil();
 
-							const codepath = resolve( this.cachedir, filename );
+									const codepath = resolve( this.cachedir, filename );
 
-							const { code, map } = processResult( result, data, src, dest, codepath );
+									const { code, map } = processResult( result, data, src, dest, codepath );
 
-							writeToCacheDir( code, map, codepath, dest )
-								.then( () => symlinkOrCopy( codepath ).to( dest ) )
-								.then( () => options.cache[ filename ] = codepath )
-								.then( fulfil );
+									writeToCacheDir( code, map, codepath, dest )
+										.then( () => symlinkOrCopy( codepath ).to( dest ) )
+										.then( () => options.cache[ filename ] = codepath )
+										.then( fulfil );
+								});
 						})
 						.catch( reject );
 				}).catch( err => {

@@ -190,5 +190,17 @@ module.exports = function () {
 				assert.equal( read( 'tmp/foo/foo.md' ), read( 'tmp/output/foo.md' ) );
 			});
 		});
+
+		it( 'accepts promises from file transformers', function () {
+			return gobble( 'tmp/foo' ).transform( function ( input ) {
+				return new Promise( function ( fulfil ) {
+					process.nextTick( fulfil, input ); 
+				});
+			}).build({
+				dest: 'tmp/output'
+			}).then( function () {
+				assert.equal( read( 'tmp/foo/foo.md' ), read( 'tmp/output/foo.md' ) );
+			});
+		});
 	});
 };
