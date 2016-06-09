@@ -194,7 +194,9 @@ module.exports = function () {
 		it( 'accepts promises from file transformers', function () {
 			return gobble( 'tmp/foo' ).transform( function ( input ) {
 				return new Promise( function ( fulfil ) {
-					process.nextTick( fulfil, input ); 
+					process.nextTick( function () {
+						fulfil(input);
+					});
 				});
 			}).build({
 				dest: 'tmp/output'
